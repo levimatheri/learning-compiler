@@ -2,6 +2,7 @@
 {
     private readonly string _text;
     private int _position;
+    private List<string> _diagnostics = [];
     public Lexer(string text)
     {
         _text = text;
@@ -20,6 +21,8 @@
     {
         _position++;
     }
+
+    public IEnumerable<string> Diagnostics => _diagnostics;
 
     public SyntaxToken NextToken()
     {
@@ -42,7 +45,7 @@
             var text = _text.Substring(start, length);
             if (!int.TryParse(text, out var value))
             {
-                
+                _diagnostics.Add($"The number {_text} isn't a valid Int32.");
             }
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
@@ -58,15 +61,22 @@
             return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
         }
 
-        return Current switch
+        if (Current == '+')
+            return new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null);
+        else if (Current == '-')
+            return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
+        else if (Current == '*')
+            return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
+        else if (Current == '/')
+            return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
+        else if (Current == '(')
+            return new SyntaxToken(SyntaxKind.OpenParenToken, _position++, "(", null);
+        else if (Current == ')')
+            return new SyntaxToken(SyntaxKind.CloseParenToken, _position++, ")", null);
+        else
         {
-            '+' => new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null),
-            '-' => new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null),
-            '*' => new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null),
-            '/' => new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null),
-            '(' => new SyntaxToken(SyntaxKind.OpenParenToken, _position++, "(", null),
-            ')' => new SyntaxToken(SyntaxKind.CloseParenToken, _position++, ")", null),
-            _ => new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null)
-        };
+            _diagnostics.Add($"ERROR: Bad character input: '{Current}'");
+            return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
+        }
     }
 }

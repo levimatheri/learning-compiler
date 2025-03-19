@@ -11,5 +11,6 @@
     BadToken,
     EndOfFileToken,
     NumberExpression,
-    BinaryExpression
+    BinaryExpression,
+    ParenthesizedExpression
 }

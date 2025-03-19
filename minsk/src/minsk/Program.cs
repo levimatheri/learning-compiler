@@ -1,4 +1,7 @@
-﻿while (true)
+﻿using minsk;
+
+var showTree = false;
+while (true)
 {
     Console.Write("> ");
     var line = Console.ReadLine();
@@ -7,10 +10,42 @@
     var parser = new Parser(line);
     var expression = parser.Parse();
 
-    var color = Console.ForegroundColor;
-    Console.ForegroundColor = ConsoleColor.DarkGray;
-    PrettyPrint(expression);
-    Console.ForegroundColor = color;
+    if (line == "#showTree")
+    {
+        showTree = !showTree;
+        Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees.");
+        continue;
+    }
+    else if (line == "#cls")
+    {
+        Console.Clear();
+        continue;
+    }
+    
+    var syntaxTree = SyntaxTree.Parse(line);
+
+    if (showTree)
+    {
+        var color = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        PrettyPrint(syntaxTree.Root);
+        Console.ForegroundColor = color;
+    }
+    
+    if (!syntaxTree.Diagnostics.Any())
+    {
+        var evaluator = new Evaluator(syntaxTree.Root);
+        var result = evaluator.Evaluate();
+        Console.WriteLine(result);
+    }
+    else
+    {
+        var color = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkRed;
+        foreach (var diagnostic in syntaxTree.Diagnostics)
+            Console.WriteLine(diagnostic);
+        Console.ForegroundColor = color;
+    }
 }
 
 static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = false)

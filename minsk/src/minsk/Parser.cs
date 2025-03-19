@@ -1,6 +1,9 @@
-﻿public class Parser
+﻿using minsk;
+
+public class Parser
 {
     private readonly SyntaxToken[] _tokens;
+    private List<string> _diagnostics = [];
     private int _position;
     public Parser(string text)
     {
@@ -17,7 +20,8 @@
             }
         } while (token.Kind != SyntaxKind.EndOfFileToken);
 
-        _tokens = tokens.ToArray();
+        _tokens = [.. tokens];
+        _diagnostics.AddRange(lexer.Diagnostics);
     }
 
     private SyntaxToken Peek(int offset)
@@ -36,14 +40,43 @@
 
     public SyntaxToken Match(SyntaxKind kind)
     {
-        return Current.Kind == kind ? NextToken() : new SyntaxToken(kind, Current.Position, null, null);
+        if (Current.Kind == kind) 
+            return NextToken();
+        
+        _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
+        return new SyntaxToken(kind, Current.Position, null, null);
     }
     
-    public ExpressionSyntax Parse()
+    public SyntaxTree Parse()
+    {
+        var expression = ParseTerm();
+        var endOfFileToken = Match(SyntaxKind.EndOfFileToken);
+        return new SyntaxTree(_diagnostics, expression, endOfFileToken);
+    }
+
+    public IEnumerable<string> Diagnostics => _diagnostics;
+
+    private ExpressionSyntax ParseTerm()
+    {
+        var left = ParseFactor();
+
+        while (Current.Kind == SyntaxKind.PlusToken ||
+               Current.Kind == SyntaxKind.MinusToken)
+        {
+            var operatorToken = NextToken();
+            var right = ParseFactor();
+            left = new BinaryExpressionSyntax(left, operatorToken, right);
+        }
+
+        return left;
+    }
+
+    private ExpressionSyntax ParseFactor()
     {
         var left = ParsePrimaryExpression();
 
-        while (Current.Kind is SyntaxKind.PlusToken or SyntaxKind.MinusToken)
+        while (Current.Kind == SyntaxKind.StarToken ||
+               Current.Kind == SyntaxKind.SlashToken)
         {
             var operatorToken = NextToken();
             var right = ParsePrimaryExpression();
@@ -53,8 +86,21 @@
         return left;
     }
 
+    private ExpressionSyntax ParseExpression()
+    {
+        return ParseTerm();
+    }
+
     private ExpressionSyntax ParsePrimaryExpression()
     {
+        if (Current.Kind == SyntaxKind.OpenParenToken)
+        {
+            var left = NextToken();
+            var expression = ParseExpression();
+            var right = Match(SyntaxKind.CloseParenToken);
+            return new ParenthesizedExpressionSyntax(left, expression, right);
+        }
+        
         var numberToken = Match(SyntaxKind.NumberToken);
         return new NumberExpressionSyntax(numberToken);
     }
