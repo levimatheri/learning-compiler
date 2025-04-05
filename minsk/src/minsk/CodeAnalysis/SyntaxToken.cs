@@ -1,4 +1,6 @@
-﻿public class SyntaxToken : SyntaxNode
+﻿namespace minsk.CodeAnalysis;
+
+public class SyntaxToken : SyntaxNode
 {
     public override SyntaxKind Kind { get; }
 

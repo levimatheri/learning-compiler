@@ -1,4 +1,4 @@
-namespace minsk;
+namespace minsk.CodeAnalysis;
 
 public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
 {

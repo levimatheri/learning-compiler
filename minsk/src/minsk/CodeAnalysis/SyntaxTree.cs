@@ -1,11 +1,9 @@
-using System;
+namespace minsk.CodeAnalysis;
 
-namespace minsk;
-
-public class SyntaxTree
+public sealed class SyntaxTree
 {
     public SyntaxTree(
-        IEnumerable<string> diagnostics, 
+        IEnumerable<string> diagnostics,
         ExpressionSyntax root,
         SyntaxToken endOfFileToken)
     {

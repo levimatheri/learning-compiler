@@ -1,4 +1,6 @@
-﻿public class Lexer
+﻿namespace minsk.CodeAnalysis;
+
+internal sealed class Lexer
 {
     private readonly string _text;
     private int _position;
@@ -24,7 +26,7 @@
 
     public IEnumerable<string> Diagnostics => _diagnostics;
 
-    public SyntaxToken NextToken()
+    public SyntaxToken Lex()
     {
         // <numbers>
         // +  - * / ( )
@@ -38,7 +40,7 @@
         if (char.IsDigit(Current))
         {
             var start = _position;
-            while (char.IsDigit(Current)) 
+            while (char.IsDigit(Current))
                 Next();
 
             var length = _position - start;
@@ -49,11 +51,11 @@
             }
             return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
         }
-        
+
         if (char.IsWhiteSpace(Current))
         {
             var start = _position;
-            while (char.IsWhiteSpace(Current)) 
+            while (char.IsWhiteSpace(Current))
                 Next();
 
             var length = _position - start;
@@ -61,22 +63,23 @@
             return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
         }
 
-        if (Current == '+')
-            return new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null);
-        else if (Current == '-')
-            return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
-        else if (Current == '*')
-            return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
-        else if (Current == '/')
-            return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
-        else if (Current == '(')
-            return new SyntaxToken(SyntaxKind.OpenParenToken, _position++, "(", null);
-        else if (Current == ')')
-            return new SyntaxToken(SyntaxKind.CloseParenToken, _position++, ")", null);
-        else
+        switch (Current)
         {
-            _diagnostics.Add($"ERROR: Bad character input: '{Current}'");
-            return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
+            case '+':
+                return new SyntaxToken(SyntaxKind.PlusToken, _position++, "+", null);
+            case '-':
+                return new SyntaxToken(SyntaxKind.MinusToken, _position++, "-", null);
+            case '*':
+                return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
+            case '/':
+                return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
+            case '(':
+                return new SyntaxToken(SyntaxKind.OpenParenToken, _position++, "(", null);
+            case ')':
+                return new SyntaxToken(SyntaxKind.CloseParenToken, _position++, ")", null);
+            default:
+                _diagnostics.Add($"ERROR: Bad character input: '{Current}'");
+                return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
         }
     }
 }

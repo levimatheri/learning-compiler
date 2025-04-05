@@ -1,4 +1,6 @@
-﻿public sealed class BinaryExpressionSyntax : ExpressionSyntax
+﻿namespace minsk.CodeAnalysis;
+
+public sealed class BinaryExpressionSyntax : ExpressionSyntax
 {
     public ExpressionSyntax Left { get; }
     public SyntaxToken OperatorToken { get; }
