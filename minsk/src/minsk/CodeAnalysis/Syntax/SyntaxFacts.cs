@@ -1,4 +1,5 @@
-﻿namespace minsk.CodeAnalysis.Syntax;
+﻿
+namespace minsk.CodeAnalysis.Syntax;
 
 internal static class SyntaxFacts
 {
@@ -6,8 +7,7 @@ internal static class SyntaxFacts
     {
         return kind switch
         {
-            SyntaxKind.PlusToken => 3,
-            SyntaxKind.MinusToken => 3,
+            SyntaxKind.PlusToken or SyntaxKind.MinusToken or SyntaxKind.BangToken => 6,
             _ => 0
         };
     }
@@ -16,11 +16,22 @@ internal static class SyntaxFacts
     {
         return kind switch
         {
-            SyntaxKind.StarToken => 2,
-            SyntaxKind.SlashToken => 2,
-            SyntaxKind.PlusToken => 1,
-            SyntaxKind.MinusToken => 1,
+            SyntaxKind.StarToken or SyntaxKind.SlashToken => 5,
+            SyntaxKind.PlusToken or SyntaxKind.MinusToken => 4,
+            SyntaxKind.EqualsEqualsToken or SyntaxKind.BangEqualsToken => 3,
+            SyntaxKind.AmpersandAmpersandToken => 2,
+            SyntaxKind.PipePipeToken => 1,
             _ => 0
+        };
+    }
+
+    public static SyntaxKind GetKewyordKind(string text)
+    {
+        return text switch
+        {
+            "true" => SyntaxKind.TrueKeyword,
+            "false" => SyntaxKind.FalseKeyword,
+            _ => SyntaxKind.IdentifierToken
         };
     }
 }

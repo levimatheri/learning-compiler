@@ -11,9 +11,9 @@ public class SyntaxToken : SyntaxNode
 
     public int Position { get; }
     public string Text { get; }
-    public object Value { get; }
+    public object? Value { get; }
 
-    public SyntaxToken(SyntaxKind kind, int position, string text, object value)
+    public SyntaxToken(SyntaxKind kind, int position, string text, object? value)
     {
         Kind = kind;
         Position = position;

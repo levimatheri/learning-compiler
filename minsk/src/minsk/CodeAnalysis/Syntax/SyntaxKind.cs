@@ -11,12 +11,22 @@ public enum SyntaxKind
     MinusToken,
     StarToken,
     SlashToken,
+    BangToken,
+    EqualsEqualsToken,
+    BangEqualsToken,
+    AmpersandAmpersandToken,
+    PipePipeToken,
     OpenParenToken,
     CloseParenToken,
+    IdentifierToken,
 
     // Expressions
     LiteralExpression,
     UnaryExpression,
     BinaryExpression,
-    ParenthesizedExpression
+    ParenthesizedExpression,
+
+    // Keywords
+    TrueKeyword,
+    FalseKeyword,
 }
