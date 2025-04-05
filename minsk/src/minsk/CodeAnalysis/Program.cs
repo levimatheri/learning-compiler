@@ -1,4 +1,5 @@
 ﻿using minsk.CodeAnalysis;
+using minsk.CodeAnalysis.Binding;
 using minsk.CodeAnalysis.Syntax;
 
 var showTree = false;
@@ -24,6 +25,10 @@ while (true)
     }
 
     var syntaxTree = SyntaxTree.Parse(line);
+    var binder = new Binder();
+    var boundExpression = binder.BindExpression(syntaxTree.Root);
+
+    var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
 
     if (showTree)
     {
@@ -32,9 +37,9 @@ while (true)
         Console.ResetColor();
     }
 
-    if (!syntaxTree.Diagnostics.Any())
+    if (diagnostics.Length == 0)
     {
-        var evaluator = new Evaluator(syntaxTree.Root);
+        var evaluator = new Evaluator(boundExpression);
         var result = evaluator.Evaluate();
         Console.WriteLine(result);
     }
