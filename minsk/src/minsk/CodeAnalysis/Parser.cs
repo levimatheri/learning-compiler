@@ -1,6 +1,4 @@
-﻿using minsk.CodeAnalysis;
-
-namespace minsk.CodeAnalysis;
+﻿namespace minsk.CodeAnalysis;
 
 internal sealed class Parser
 {
@@ -64,7 +62,7 @@ internal sealed class Parser
 
         while (true)
         {
-            var precedence = GetBinaryOperatorPrecedence(Current.Kind);
+            var precedence = Current.Kind.GetBinaryOperatorPrecedence();
             if (precedence == 0 || precedence <= parentPrecedence)
                 break;
             var operatorToken = NextToken();
@@ -73,18 +71,6 @@ internal sealed class Parser
         }   
         
         return left;
-    }
-
-    private static int GetBinaryOperatorPrecedence(SyntaxKind kind)
-    {
-        return kind switch
-        {
-            SyntaxKind.PlusToken => 1,
-            SyntaxKind.MinusToken => 1,
-            SyntaxKind.StarToken => 2,
-            SyntaxKind.SlashToken => 2,
-            _ => 0
-        };
     }
 
     private ExpressionSyntax ParsePrimaryExpression()
