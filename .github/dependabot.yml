@@ -1,11 +1,16 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 version: 2
 updates:
-  - package-ecosystem: "nuget" # See documentation for possible values
-    directory: "/minsk/src/minsk" # Location of package manifests
+  - package-ecosystem: "nuget"
+    directory: "/minsk/src/minsk"
     schedule:
       interval: "weekly"
+    # Enable security updates
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    # Dependabot will also create PRs for security updates as soon as they're detected
+    allow:
+      - dependency-type: "all"
+    ignore: []
+    # This enables security updates (GitHub will trigger these automatically)
+    # No explicit 'security-updates' key is needed, but schedule + the right ecosystem triggers it.
