@@ -4,5 +4,7 @@ internal enum BoundNodeKind
 {
     UnaryExpression,
     BinaryExpression,
-    LiteralExpression
+    LiteralExpression,
+    AssignmentExpression,
+    VariableExpression
 }

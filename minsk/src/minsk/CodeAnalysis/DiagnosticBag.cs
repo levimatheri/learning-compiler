@@ -11,6 +11,28 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic>
         _diagnostics.AddRange(diagnostics._diagnostics);
     }
     
+    public IEnumerator<Diagnostic> GetEnumerator() => _diagnostics.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    
+    private void Report(TextSpan span, string message)
+    {
+        var diagnostic = new Diagnostic(span, message);
+        _diagnostics.Add(diagnostic);
+    }
+
+    public void ReportUndefinedUnaryOperator(TextSpan span, string operatorText, Type operandType)
+    {
+        var message = $"Unary operator '{operatorText}' is not defined for type {operandType}.";
+        Report(span, message);
+    }
+
+    public void ReportUndefinedBinaryOperator(TextSpan operatorTokenSpan, string operatorTokenText, Type boundLeftType, Type boundRightType)
+    {
+        var message = $"Binary operator '{operatorTokenText}' is not defined for types {boundLeftType} and {boundRightType}.";
+        Report(operatorTokenSpan, message);
+    }
+    
     public void ReportBadCharacter(int position, char character)
     {
         var message = $"Bad character input: '{character}'.";
@@ -29,25 +51,9 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic>
         Report(currentSpan, message);
     }
     
-    public IEnumerator<Diagnostic> GetEnumerator() => _diagnostics.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    
-    private void Report(TextSpan span, string message)
+    public void ReportUndefinedName(TextSpan span, string name)
     {
-        var diagnostic = new Diagnostic(span, message);
-        _diagnostics.Add(diagnostic);
-    }
-
-    public void ReportUndefinedUnaryOperator(TextSpan operatorTokenSpan, string operatorTokenText, SyntaxKind operatorTokenKind)
-    {
-        var message = $"Unary operator '{operatorTokenText}' is not defined for type {operatorTokenKind}.";
-        Report(operatorTokenSpan, message);
-    }
-
-    public void ReportUndefinedBinaryOperator(TextSpan operatorTokenSpan, string operatorTokenText, Type boundLeftType, Type boundRightType)
-    {
-        var message = $"Binary operator '{operatorTokenText}' is not defined for types {boundLeftType} and {boundRightType}.";
-        Report(operatorTokenSpan, message);
+        var message = $"Variable '{name}' doesn't exist.";
+        Report(span, message);
     }
 }

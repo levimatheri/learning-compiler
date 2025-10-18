@@ -19,14 +19,18 @@ public enum SyntaxKind
     OpenParenToken,
     CloseParenToken,
     IdentifierToken,
+    EqualsToken,
 
     // Expressions
     LiteralExpression,
     UnaryExpression,
     BinaryExpression,
     ParenthesizedExpression,
+    NameExpression,
+    AssignmentExpression,
 
     // Keywords
     TrueKeyword,
     FalseKeyword,
+    
 }
