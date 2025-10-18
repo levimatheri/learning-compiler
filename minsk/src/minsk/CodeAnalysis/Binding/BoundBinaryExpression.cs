@@ -1,4 +1,4 @@
-﻿namespace minsk.CodeAnalysis.Binding;
+﻿namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class BoundBinaryExpression : BoundExpression
 {
@@ -9,7 +9,7 @@ internal sealed class BoundBinaryExpression : BoundExpression
         Right = right;
     }
 
-    public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
+    public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
     public BoundExpression Left { get; }
     public BoundBinaryOperator Op { get; }
     public BoundExpression Right { get; }

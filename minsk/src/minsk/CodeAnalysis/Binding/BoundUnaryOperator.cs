@@ -1,6 +1,6 @@
-﻿using minsk.CodeAnalysis.Syntax;
+﻿using Minsk.CodeAnalysis.Syntax;
 
-namespace minsk.CodeAnalysis.Binding;
+namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class BoundUnaryOperator
 {

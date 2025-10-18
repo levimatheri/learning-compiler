@@ -1,9 +1,9 @@
-namespace minsk.CodeAnalysis.Syntax;
+namespace Minsk.CodeAnalysis.Syntax;
 
 public sealed class SyntaxTree
 {
     public SyntaxTree(
-        IEnumerable<string> diagnostics,
+        IEnumerable<Diagnostic> diagnostics,
         ExpressionSyntax root,
         SyntaxToken endOfFileToken)
     {
@@ -12,7 +12,7 @@ public sealed class SyntaxTree
         EndOfFileToken = endOfFileToken;
     }
 
-    public IEnumerable<string> Diagnostics { get; }
+    public IEnumerable<Diagnostic> Diagnostics { get; }
     public ExpressionSyntax Root { get; }
     public SyntaxToken EndOfFileToken { get; }
 

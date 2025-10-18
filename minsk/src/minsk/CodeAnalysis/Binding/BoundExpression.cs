@@ -1,4 +1,4 @@
-﻿namespace minsk.CodeAnalysis.Binding;
+﻿namespace Minsk.CodeAnalysis.Binding;
 
 internal abstract class BoundExpression : BoundNode
 {

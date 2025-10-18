@@ -1,4 +1,4 @@
-﻿namespace minsk.CodeAnalysis.Syntax;
+﻿namespace Minsk.CodeAnalysis.Syntax;
 
 public abstract class SyntaxNode
 {

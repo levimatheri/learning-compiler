@@ -1,12 +1,12 @@
-﻿using minsk.CodeAnalysis.Syntax;
+﻿using Minsk.CodeAnalysis.Syntax;
 
-namespace minsk.CodeAnalysis.Binding;
+namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class Binder
 {
-    private readonly List<string> _diagnostics = [];
+    private readonly DiagnosticBag _diagnostics = [];
 
-    public IEnumerable<string> Diagnostics => _diagnostics;
+    public DiagnosticBag Diagnostics => _diagnostics;
 
     public BoundExpression BindExpression(ExpressionSyntax syntax)
     {
@@ -15,6 +15,7 @@ internal sealed class Binder
             SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
             SyntaxKind.UnaryExpression => BindUnaryExpression((UnaryExpressionSyntax)syntax),
             SyntaxKind.BinaryExpression => BindBinaryExpression((BinaryExpressionSyntax)syntax),
+            SyntaxKind.ParenthesizedExpression => BindExpression(((ParenthesizedExpressionSyntax)syntax).Expression),
             _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
         };
     }
@@ -31,13 +32,10 @@ internal sealed class Binder
         var boundRight = BindExpression(syntax.Right);
         var boundOperator = BoundBinaryOperator.Bind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
 
-        if (boundOperator == null)
-        {
-            _diagnostics.Add($"Binary operator {syntax.OperatorToken.Kind} is not defined for types {boundLeft.Type} and {boundRight.Type}");
-            return boundLeft;
-        }
+        if (boundOperator != null) return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
+        _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeft.Type, boundRight.Type);
+        return boundLeft;
 
-        return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
     }
 
     private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
@@ -47,7 +45,7 @@ internal sealed class Binder
 
         if (boundOperator == null)
         {
-            _diagnostics.Add($"Unary operator {syntax.OperatorToken.Kind} is not defined for type {boundOperand.Type}");
+            _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, syntax.OperatorToken.Kind);
             return boundOperand;
         }
 
