@@ -1,4 +1,5 @@
 <Solution>
-  <Project Path="src\Minsk\Minsk.csproj" />
+  <Project Path="src\minsk.Tests\Minsk.Tests.csproj" />
+  <Project Path="src\minsk\Minsk.csproj" />
   <Project Path="src\msc\msc.csproj" />
 </Solution>

@@ -84,9 +84,9 @@ internal sealed class Lexer
             case '/':
                 return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
             case '(':
-                return new SyntaxToken(SyntaxKind.OpenParenToken, _position++, "(", null);
+                return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position++, "(", null);
             case ')':
-                return new SyntaxToken(SyntaxKind.CloseParenToken, _position++, ")", null);
+                return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
             case '&':
                 if (Lookahead == '&')
                 {

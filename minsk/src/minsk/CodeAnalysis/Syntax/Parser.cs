@@ -107,11 +107,11 @@ internal sealed class Parser
     {
         switch (Current.Kind)
         {
-            case SyntaxKind.OpenParenToken:
+            case SyntaxKind.OpenParenthesisToken:
             {
                 var left = NextToken();
                 var expression = ParseExpression();
-                var right = MatchToken(SyntaxKind.CloseParenToken);
+                var right = MatchToken(SyntaxKind.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
@@ -121,6 +121,12 @@ internal sealed class Parser
                 var keywordToken = NextToken();
                 var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
                 return new LiteralExpressionSyntax(keywordToken, value);
+            }
+
+            case SyntaxKind.IdentifierToken:
+            {
+                var identifierToken = NextToken();
+                return new NameExpressionSyntax(identifierToken);
             }
         }
 
